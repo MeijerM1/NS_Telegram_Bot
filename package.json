@@ -4,8 +4,13 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "https": "^1.0.0",
+    "ns": "^1.0.2",
+    "ns-api": "^2.0.8",
+    "request": "^2.83.0",
     "telegraf": "^3.18.0",
-    "telegraf-command-parts": "^1.0.3"
+    "telegraf-command-parts": "^1.0.3",
+    "xml2js": "^0.4.19"
   },
   "devDependencies": {},
   "scripts": {

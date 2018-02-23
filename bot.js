@@ -1,20 +1,35 @@
-const Telegraf = require('telegraf')
+const Telegraf = require('telegraf');
 const commandParts = require('telegraf-command-parts');
 
-const bot = new Telegraf(process.env.BOT_TOKEN)
+const bot = new Telegraf(process.env.BOT_TOKEN);
 bot.use(commandParts());
 
 bot.start((ctx) => {
   console.log('started:', ctx.from.id)
   return ctx.reply('Welcome!')
-})
-
-bot.command('help', (ctx) => ctx.reply('Try send a sticker!'))
-bot.hears('hi', (ctx) => ctx.reply('Hey there!'))
-bot.hears(/buy/i, (ctx) => ctx.reply('Buy-buy!'))
-bot.on('sticker', (ctx) => ctx.reply('👍'))
-bot.command('multiply', (ctx) => {
-    console.log(ctx.state.command);
 });
 
+bot.command('addStation', (ctx) => {
+    runCommand(ctx);
+});
+
+bot.command('init', (ctx) => {
+  runCommand(ctx);
+});
+
+function runCommand(ctx) {
+    try {
+    let commandFile = require(`./commands/${ctx.state.command.command}.js`);
+    commandFile.run(ctx);
+  } catch (err) {
+    console.error(err);
+    message.reply("Command not found.");
+  }   
+}
+
+bot.catch((err) => {
+  console.log('Error occured: ', err)
+})
+
+console.log('Bot initialised');
 bot.startPolling()
