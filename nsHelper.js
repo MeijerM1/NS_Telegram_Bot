@@ -8,3 +8,10 @@ exports.getStationList = (callback, stations) => {
         callback(data,stations);
     });
 }
+
+exports.getRoute = (ctx, params, callback) => {
+    ns.reisadvies(params, function(err, data) {
+        console.log(err);
+        callback(ctx, data);
+    })
+}

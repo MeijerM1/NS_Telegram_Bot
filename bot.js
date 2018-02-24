@@ -17,6 +17,10 @@ bot.command('init', (ctx) => {
   runCommand(ctx);
 });
 
+bot.command('route', (ctx) => {
+  runCommand(ctx);
+});
+
 function runCommand(ctx) {
     try {
     let commandFile = require(`./commands/${ctx.state.command.command}.js`);
