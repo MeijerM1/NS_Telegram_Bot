@@ -12,6 +12,10 @@ exports.getStationList = (callback, stations) => {
 exports.getRoute = (ctx, params, callback) => {
     ns.reisadvies(params, function(err, data) {
         console.log(err);
+        if(err != null) {
+            ctx.reply("Oops look like you made a spelling mistake");
+            return;
+        }
         callback(ctx, data);
     })
 }

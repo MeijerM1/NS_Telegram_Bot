@@ -1,10 +1,16 @@
 const nsHelper = require('../nsHelper');
 
-exports.run = (ctx) => { 
+exports.run = (ctx) => {
+
+    if (ctx.state.command.splitArgs.length !== 2) {
+        ctx.reply("invalid argument size, " + exports.help());
+        return;
+    }
+
     var params = {
-        fromStation: ctx.state.command.splitArgs[0],
-        toStation: ctx.state.command.splitArgs[1],
-        dateTime: '2018-02-21T15:50',
+        fromStation: ctx.state.command.splitArgs[0].replace(/_/g, " "),
+        toStation: ctx.state.command.splitArgs[1].replace(/_/g, " "),
+        dateTime: new Date(),
         departure: false
     }
 
@@ -16,11 +22,17 @@ exports.run = (ctx) => {
 function printRoute(ctx, data) {
     //console.log(data);
     console.log(data[0].ReisDeel);
+    var stations = [];
 
-    ctx.reply('You will travel via the following stations: ')
-
-    data[0].ReisDeel[0].ReisStop.forEach(element => {
-        console.log(element);
-        ctx.reply(element.Naam);
+    data[0].ReisDeel.forEach(element => {
+        element.ReisStop.forEach(element => {
+            stations.push(element)
+        })
     });
+
+    console.log(stations);
+}
+
+exports.help = () => {
+    return 'usage /route [stationFrom] [stationTo]';
 }
