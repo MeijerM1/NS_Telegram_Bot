@@ -1,4 +1,5 @@
 const nsHelper = require('../nsHelper');
+const dbContext = require('../dbContext');
 
 exports.run = (ctx) => {
 
@@ -26,11 +27,13 @@ function printRoute(ctx, data) {
 
     data[0].ReisDeel.forEach(element => {
         element.ReisStop.forEach(element => {
-            stations.push(element)
+            stations.push(element.Naam)
         })
     });
 
-    console.log(stations);
+    stations.forEach(element => {
+        dbContext.linkUserStation(ctx.from.id, element);
+    });
 }
 
 exports.help = () => {
