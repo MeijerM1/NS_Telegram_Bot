@@ -25,6 +25,10 @@ bot.command('route', (ctx) => {
   runCommand(ctx);
 });
 
+bot.command('addTime', (ctx) => {
+  runCommand(ctx);
+});
+
 function runCommand(ctx) {
   try {
     let commandFile = require(`./commands/${ctx.state.command.command}.js`);
@@ -39,5 +43,9 @@ bot.catch((err) => {
   console.log('Error occured: ', err)
 })
 
+exports.sendMessage = (userID, message) => {
+  bot.telegram.sendMessage(userID, message);
+}
+
 console.log('Bot initialised');
-bot.startPolling()
+bot.startPolling();

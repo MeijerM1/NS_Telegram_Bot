@@ -1,4 +1,5 @@
 const mySql = require('mysql');
+const nsHelper = require('./nsHelper');
 
 var pool = mySql.createPool({
     connectionLimit: 10,
@@ -27,6 +28,26 @@ exports.addUser = function (ctx) {
     });
 }
 
+exports.getUserStationForTime = (time) => {
+    var query ="SELECT DISTINCT u.id, s.name_long FROM user AS u " +
+                    "JOIN time AS t ON t.userId = u.id " +
+                    "JOIN user_station AS us ON u.id = us.user_id " +
+                    "JOIN station AS s ON us.station_id = s.id " +
+                    "WHERE t.time LIKE ?";
+
+    var params  = [time];
+
+    executeQuery(query, params, nsHelper.checkStoring);
+} 
+
+exports.addTime = (userId, time) => {
+
+    var query = "INSERT INTO time (time, userId) VALUES (?, ?)";
+
+    var params = [time, userId];
+
+    executeQuery(query, params);
+}
 
 exports.addStation = function (stations) {
 
@@ -75,6 +96,25 @@ function addUserStation(userId, stationId) {
             };
 
             console.log(results);
+        });
+    });
+}
+
+function executeQuery(query, qeuryParams, callback, callbackParams) {
+    pool.getConnection(function(err, connection) {
+
+        connection.query(query, qeuryParams, function (error, results, fields) {
+            connection.release();        
+            if (error) {
+                console.log(error);
+                return false;
+            };
+
+            console.log("Query: " + query +  " executed with result of: " + results.message )
+
+            if(callback !== undefined) {
+                callback(results, callbackParams);            
+            }
         });
     });
 }

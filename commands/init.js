@@ -25,17 +25,6 @@ exports.help = () => {
     return 'usage /init [station1] [station2] [time HH:mm]';
 }
 
-function checkDate(stringDate) {
-    var timePattern = new RegExp("/(00|01|02|03|04|05|06|07|08|09|10|11|12|13|14|15|16|17|18|19|20|21|22|23):?(0|1|2|3|4|5)\d/");
-    if(timePattern.test(stringDate)) {
-        console.log('valid time');
-        return true;
-    } else {
-        console.log("invalid time format");
-        return false;
-    }
-}
-
 function checkIfStationExists(stationsToCheck) {
     nsHelper.getStationList(checkStation, stationsToCheck);
 }

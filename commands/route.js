@@ -17,12 +17,10 @@ exports.run = (ctx) => {
 
     console.log(params);
 
-    nsHelper.getRoute(ctx, params, printRoute);
+    nsHelper.getRoute(ctx, params, linkUserToStations);
 }
 
-function printRoute(ctx, data) {
-    //console.log(data);
-    console.log(data[0].ReisDeel);
+function linkUserToStations(ctx, data) {
     var stations = [];
 
     data[0].ReisDeel.forEach(element => {
@@ -34,6 +32,8 @@ function printRoute(ctx, data) {
     stations.forEach(element => {
         dbContext.linkUserStation(ctx.from.id, element);
     });
+
+    ctx.reply("Great now we need a time to inform you if there are any notifications. use the /addTime [hh:mm] command to set a time you want to be informed.")
 }
 
 exports.help = () => {
