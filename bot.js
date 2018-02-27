@@ -29,6 +29,14 @@ bot.command('addTime', (ctx) => {
   runCommand(ctx);
 });
 
+bot.command('myTimes', (ctx) => {
+  runCommand(ctx);
+});
+
+bot.command('removeTime', (ctx) => {
+  runCommand(ctx);
+});
+
 function runCommand(ctx) {
   try {
     let commandFile = require(`./commands/${ctx.state.command.command}.js`);

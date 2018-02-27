@@ -28,6 +28,22 @@ exports.addUser = function (ctx) {
     });
 }
 
+exports.removeTime = (userId, time, callback) => {
+    var query = "DELETE FROM time WHERE userId = ? AND time = ?"
+
+    var params = [userId, time];
+
+    executeQuery(query, params, callback, userId);
+}
+
+exports.getTimesForUser = (userId, callback) => {
+    var query = "SELECT t.userId, t.time FROM time t WHERE t.userId = ?"
+
+    var params = [userId];
+
+    executeQuery(query, params, callback, userId);
+}
+
 exports.getUserStationForTime = (time) => {
     var query ="SELECT DISTINCT u.id, s.name_long FROM user AS u " +
                     "JOIN time AS t ON t.userId = u.id " +
@@ -100,17 +116,18 @@ function addUserStation(userId, stationId) {
     });
 }
 
-function executeQuery(query, qeuryParams, callback, callbackParams) {
+function executeQuery(query, queryParams, callback, callbackParams) {
     pool.getConnection(function(err, connection) {
 
-        connection.query(query, qeuryParams, function (error, results, fields) {
+        connection.query(query, queryParams, function (error, results, fields) {
             connection.release();        
             if (error) {
                 console.log(error);
                 return false;
             };
 
-            console.log("Query: " + query +  " executed with result of: " + results.message )
+            console.log("Executed query: " + query +  " with parameters " + queryParams);
+            console.log("Affected rows: " + results.affectedRows);
 
             if(callback !== undefined) {
                 callback(results, callbackParams);            
