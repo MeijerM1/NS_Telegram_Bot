@@ -1,6 +1,9 @@
 const dbContext = require('../dbContext');
 const schedule = require('node-schedule');
 const nsHelper = require('../nsHelper');
+const bot = require('../bot');
+
+var timeStamp;
 
 exports.run = (ctx) => {
     if(ctx.state.command.splitArgs.length !== 1) {
@@ -8,16 +11,31 @@ exports.run = (ctx) => {
         return;
     }
 
-    var time  = ctx.state.command.splitArgs[0];
+    let time  = ctx.state.command.splitArgs[0];
+
+    timeStamp = time;
 
     if(!checkTime(time)) {
         ctx.reply("invalid time format, use hh:mm");
         return;
     }
 
-    dbContext.addTime(ctx.from.id, time);
+    dbContext.getTimesForUser(ctx.from.id, checkUserTimes);
+}
 
-    scheduleJob(time);
+function checkUserTimes(results, userId) {
+    console.log(results);
+
+    if(results.length >= 2) {
+        bot.sendMessage(userId, "You can only set 2 times at which you want to receive notifications");
+        return;
+    }
+
+    dbContext.addTime(userId, timeStamp);
+
+    scheduleJob(timeStamp);
+
+    bot.sendMessage(userId, "Time has been added")
 }
 
 function checkTime(stringTime) {
@@ -31,6 +49,7 @@ function checkTime(stringTime) {
 }
 
 function scheduleJob(time) {
+    console.log(time);
     var hours = time.substring(0, 2);
     var minutes = time.substring(3, 5);
 
@@ -42,12 +61,15 @@ function scheduleJob(time) {
     var j = schedule.scheduleJob(rule, function(fireDate){
         console.log(fireDate);
 
-        console.log();
-        console.log();
+        var minutes = fireDate.getMinutes();
 
-        var time = fireDate.getHours() + ":" + fireDate.getMinutes();
+        if(minutes.length === 1) {
+            minutes = "0" + minutes;
+        }
 
-        dbContext.getUserStationForTime(time);
+        var time = fireDate.getHours() + ":" + minutes;
+
+        dbContext.getUsersForTime(time, nsHelper.checkStoringForUsers);
     });
 }
 

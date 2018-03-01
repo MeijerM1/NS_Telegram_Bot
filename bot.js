@@ -17,11 +17,11 @@ bot.command('addStation', (ctx) => {
   runCommand(ctx);
 });
 
-bot.command('init', (ctx) => {
+bot.command('myStations', (ctx) => {
   runCommand(ctx);
-}); 
+});
 
-bot.command('route', (ctx) => {
+bot.command('removeStation', (ctx) => {
   runCommand(ctx);
 });
 
@@ -36,6 +36,15 @@ bot.command('myTimes', (ctx) => {
 bot.command('removeTime', (ctx) => {
   runCommand(ctx);
 });
+
+bot.command('route', (ctx) => {
+  runCommand(ctx);
+});
+
+bot.command('storingen', (ctx) => {
+  runCommand(ctx);
+});
+
 
 function runCommand(ctx) {
   try {

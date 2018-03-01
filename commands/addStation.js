@@ -1,11 +1,30 @@
+const dbContext = require("../dbContext");
+const bot = require("../bot");
+
 exports.run = (ctx) => {
-    ctx.reply("I was called from an external file!")
-    console.log(ctx.state.command);
-    console.log(ctx.update.message.from);
+    if(ctx.state.command.splitArgs.length !== 1 || ctx.state.command.splitArgs[0] === "") {
+        bot.sendMessage(ctx.reply("Invalid argument size, " + exports.help()))
+        return;
+    }
 
-    // Check if staion exists
+    var stationName = ctx.state.command.splitArgs[0];
 
-    // If so add station to list of station specific to user
+    dbContext.getStation(stationName, addStationForUser, ctx.from.id);
+}
 
-    // If not return and prompt message
+function addStationForUser(result, userId) {
+    console.log(result);
+
+    if(result.length === 0) {
+        bot.sendMessage(userId, "No station with that name.");
+        return;
+    }
+
+    dbContext.AddStationForUser(userId, result[0].id);
+
+    bot.sendMessage(userId, "Your are now receiving notifications about station: " + result[0].name_long);
+}
+
+exports.help = () => {
+    return "usage /addStation [stationName].";
 }

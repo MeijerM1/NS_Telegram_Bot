@@ -6,11 +6,17 @@ exports.run = (ctx) => {
 }
 
 function printResults(results, userId) {
+    var message;
+
     if(results.length === 0) {
-        bot.sendMessage(userId, "You don\'t have any times setup yet");
+        message = "You don\'t have any times setup yet";
+    } else {
+        message = "Your are being notified at: \n"
+
+        results.forEach(element => {
+            message = message + "- " + element.time + "\n";
+        });
     }
 
-    results.forEach(element => {
-        bot.sendMessage(element.userId, element.time)
-    });
+    bot.sendMessage(userId, message);
 }

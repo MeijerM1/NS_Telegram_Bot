@@ -10,22 +10,19 @@ var pool = mySql.createPool({
 });
 
 exports.addUser = function (ctx) {
-    var id = ctx.from.id;
-    var name = ctx.from.first_name;
+    var query = "INSERT INTO user (id, name) VALUES (?, ?)";
 
-    pool.getConnection(function(err, connection) {
-        var query = "INSERT INTO user (id, name) VALUES (?, ?)";
+    var params = [ctx.from.id, ctx.from.first_name];
 
-        connection.query(query, [id, name], function (error, results, fields) {
-            connection.release();        
-            if (error) {
-                console.log(error);
-                return;
-            } 
+    executeQuery(query, params);
+}
 
-            console.log(results);
-        });
-    });
+exports.getUsersForTime = (time, callback) => {
+    var query = "SELECT userId FROM time WHERE time LIKE ?"
+
+    var params = [time];
+
+    executeQuery(query, params, callback)
 }
 
 exports.removeTime = (userId, time, callback) => {
@@ -65,55 +62,58 @@ exports.addTime = (userId, time) => {
     executeQuery(query, params);
 }
 
+exports.getStationsForUser = (userId, callback) => {
+
+    var query = "SELECT s.name_long FROM station AS s "+
+                "JOIN user_station us ON s.id = us.station_id " +
+                "WHERE us.user_id LIKE ? ORDER BY s.name_long;"
+
+    var params = [userId];
+
+    executeQuery(query, params, callback, userId);
+}
+
+exports.getStation = (stationName, callback, userId) => {
+    var query = "SELECT * FROM station WHERE name_long LIKE ? OR name_middle LIKE ? OR name_short LIKE ?";
+
+    var params = [stationName, stationName, stationName];
+
+    executeQuery(query, params, callback, userId);
+}
+
 exports.addStation = function (stations) {
 
-    con.connect(function(err) {
-        if (err) throw err;
-        console.log("Connected!");
-        var sql = "INSERT INTO station (name_short, name_middle, name_long) VALUES ?";
+    var query = "INSERT INTO station (name_short, name_middle, name_long) VALUES ?";
 
-        con.query(sql, [stations], function (err, result) {
-          if (err) throw err;
-          console.log("Number of records inserted: " + result.affectedRows);
-          con.end();
-        });
-    });
+    var params = [stations];
+
+    executeQuery(query, params);
+}
+
+exports.removeStationForUser = (station, userId) => {
+    var query = "DELETE FROM user_station WHERE user_id = ? AND station_id = ?"
+
+    var params = [userId, station.id];
+
+    executeQuery(query, params);
 }
 
 exports.linkUserStation = function(userId, stationName) {
+    var query = "SELECT * FROM station WHERE name_long LIKE ? OR name_middle LIKE ? OR name_short LIKE ?";
 
-    pool.getConnection(function(err, connection) {
-        var query = "SELECT * FROM station WHERE name_long LIKE ? OR name_middle LIKE ? OR name_short LIKE ?"
+    var params = [stationName, stationName, stationName];
 
-        connection.query(query, [stationName, stationName, stationName], function (error, results, fields) {
-            connection.release();        
-            if (error) {
-                console.log(error);
-                return;
-            }
-
-            console.log(results);
-
-            addUserStation(userId, results[0].id);
-        });
-    });
+    executeQuery(query, params, function (result, userId) {
+        exports.AddStationForUser(userId, result[0].id);
+    }, userId);
 }
 
+exports.AddStationForUser = (userId, stationId ) => {
+    var query = "INSERT INTO user_station (user_id, station_id) VALUES (?, ?)";
 
-function addUserStation(userId, stationId) {
-    pool.getConnection(function(err, connection) {
-        var query = "INSERT INTO user_station (user_id, station_id) VALUES (?, ?)";
+    var params = [userId, stationId];
 
-        connection.query(query, [userId, stationId], function (error, results, fields) {
-            connection.release();        
-            if (error) {
-                console.log(error);
-                return;
-            };
-
-            console.log(results);
-        });
-    });
+    executeQuery(query, params);
 }
 
 function executeQuery(query, queryParams, callback, callbackParams) {
