@@ -7,10 +7,10 @@ bot.use(commandParts());
 
 bot.start((ctx) => {
   console.log('started:', ctx.from.id)
-    dbContext.addUser(ctx);
+  dbContext.addUser(ctx);
 
   return ctx.reply('Hi welcome to the NS malfunction checker. Before we can get started we need some information, first we need to know what route you travel.' +
-    'Use the /route [stationFrom] [stationTo] command to set your travel route. Use the full station name, also if the station name consists of multiple parts use an underscore I.E. "utrecht_centraal"');
+    'Use the /route [stationFrom] [stationTo] command to set your travel route. Use the full station name, also if the station name consists of multiple parts use an underscore I.E. "utrecht_centraal" \n You can use the /help command for extra help if needed.');
 });
 
 bot.command('addStation', (ctx) => {
@@ -45,6 +45,14 @@ bot.command('storingen', (ctx) => {
   runCommand(ctx);
 });
 
+bot.command('help', (ctx) => {
+  runCommand(ctx);
+});
+
+bot.command('[a-zA-Z0-9]', (ctx) => {
+  runCommand(ctx);
+});
+
 
 function runCommand(ctx) {
   try {
@@ -52,7 +60,7 @@ function runCommand(ctx) {
     commandFile.run(ctx);
   } catch (err) {
     console.error(err);
-    message.reply("Command not found.");
+    message.reply("Command not found. Use /help for all commands");
   }
 }
 

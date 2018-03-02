@@ -2,7 +2,7 @@ const dbContext = require("../dbContext");
 const bot = require("../bot");
 
 exports.run = (ctx) => {
-    if(ctx.state.command.splitArgs.length !== 1 || ctx.state.command.splitArgs[0] === "") {
+    if (ctx.state.command.splitArgs.length !== 1 || ctx.state.command.splitArgs[0] === "") {
         bot.sendMessage(ctx.reply("Invalid argument size, " + exports.help()))
         return;
     }
@@ -15,7 +15,7 @@ exports.run = (ctx) => {
 function addStationForUser(result, userId) {
     console.log(result);
 
-    if(result.length === 0) {
+    if (result.length === 0) {
         bot.sendMessage(userId, "No station with that name.");
         return;
     }
@@ -27,4 +27,8 @@ function addStationForUser(result, userId) {
 
 exports.help = () => {
     return "usage /addStation [stationName].";
+}
+
+exports.summary = () => {
+    return "Adds a new station to watch and receive notification about."
 }

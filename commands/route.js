@@ -39,3 +39,7 @@ function linkUserToStations(ctx, data) {
 exports.help = () => {
     return 'usage /route [stationFrom] [stationTo]';
 }
+
+exports.summary = () => {
+    return "Add all stations between the 2 stations to receive notifications about them."
+}

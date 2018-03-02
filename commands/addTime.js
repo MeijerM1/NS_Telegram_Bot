@@ -6,16 +6,16 @@ const bot = require('../bot');
 var timeStamp;
 
 exports.run = (ctx) => {
-    if(ctx.state.command.splitArgs.length !== 1) {
+    if (ctx.state.command.splitArgs.length !== 1) {
         ctx.reply("Invalid argument size, " + exports.help());
         return;
     }
 
-    let time  = ctx.state.command.splitArgs[0];
+    let time = ctx.state.command.splitArgs[0];
 
     timeStamp = time;
 
-    if(!checkTime(time)) {
+    if (!checkTime(time)) {
         ctx.reply("invalid time format, use hh:mm");
         return;
     }
@@ -26,7 +26,7 @@ exports.run = (ctx) => {
 function checkUserTimes(results, userId) {
     console.log(results);
 
-    if(results.length >= 2) {
+    if (results.length >= 2) {
         bot.sendMessage(userId, "You can only set 2 times at which you want to receive notifications");
         return;
     }
@@ -39,8 +39,9 @@ function checkUserTimes(results, userId) {
 }
 
 function checkTime(stringTime) {
-    var timePattern = new RegExp('^([0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$');
-    if(timePattern.test(stringTime)) {
+    console.log(stringTime);
+    var timePattern = new RegExp(/^([2][0-3]|[01]?[0-9])([.:][0-5][0-9])?$/);
+    if (timePattern.test(stringTime) && stringTime.length === 5) {
         return true;
     } else {
         console.log("invalid time format");
@@ -58,12 +59,12 @@ function scheduleJob(time) {
     rule.hour = parseInt(hours);
     rule.minute = parseInt(minutes);
 
-    var j = schedule.scheduleJob(rule, function(fireDate){
+    var j = schedule.scheduleJob(rule, function (fireDate) {
         console.log(fireDate);
 
         var minutes = fireDate.getMinutes();
 
-        if(minutes.length === 1) {
+        if (minutes.length === 1) {
             minutes = "0" + minutes;
         }
 
@@ -75,4 +76,8 @@ function scheduleJob(time) {
 
 exports.help = () => {
     return "usage /addTime [hh:mm]";
+}
+
+exports.summary = () => {
+    return "Adds a new time at which to receive a status update.";
 }

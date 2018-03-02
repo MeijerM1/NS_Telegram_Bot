@@ -8,7 +8,7 @@ exports.run = (ctx) => {
 function printResults(results, userId) {
     var message;
 
-    if(results.length === 0) {
+    if (results.length === 0) {
         message = "You don\'t have any times setup yet";
     } else {
         message = "Your are being notified at: \n"
@@ -19,4 +19,12 @@ function printResults(results, userId) {
     }
 
     bot.sendMessage(userId, message);
+}
+
+exports.help = () => {
+    return "Usage /myTimes";
+}
+
+exports.summary = () => {
+    return "Shows all the times at which you are receiving notifications.";
 }

@@ -9,7 +9,7 @@ function printResult(results, userId) {
 
     var message;
 
-    if(results.length === 0) {
+    if (results.length === 0) {
         message = "You are not being informed about any stations yet. \n"
 
     } else {
@@ -17,8 +17,16 @@ function printResult(results, userId) {
 
         results.forEach(element => {
             message = message + "- " + element.name_long + "\n";
-        });    
+        });
     }
 
     bot.sendMessage(userId, message);
+}
+
+exports.help = () => {
+    return "Usage /myStations";
+}
+
+exports.summary = () => {
+    return "Shows all the stations you are receiving notifications about.";
 }

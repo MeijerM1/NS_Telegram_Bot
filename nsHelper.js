@@ -31,7 +31,7 @@ exports.checkStoringForUsers = (users) => {
 
 exports.checkStoringForUser = (userId) => {
     console.log(userId);
-    var userDefects = new  Array();
+    var userDefects = new Array();
 
     dbContext.getStationsForUser(userId, function (results) {
 
@@ -48,7 +48,7 @@ exports.checkStoringForUser = (userId) => {
 
             ns.storingen(params, function (err, data) {
                 if (err) {
-                    console.log(err);                    
+                    console.log(err);
                     counter--;
                     return;
                 }
@@ -68,17 +68,17 @@ exports.checkStoringForUser = (userId) => {
 
                 counter--;
 
-                if(counter <= 0) {
+                if (counter <= 0) {
 
                     if (userDefects.length === 0) {
                         bot.sendMessage(userId, "There are no know defects at the moment! Note that standard disclaimers apply. Information may be incomplete or incorrect.")
                     } else {
                         userDefects.forEach(element => {
                             console.log(element);
-                            bot.sendMessage(userId, "Storing \n\n" + 
-                                                    "Bericht: " + element.Bericht + " \n\n" +
-                                                    "Reden: " + element.Reden + "\n\n" + 
-                                                    "Traject: " + element.Traject);
+                            bot.sendMessage(userId, "Storing \n\n" +
+                                "Bericht: " + element.Bericht + " \n\n" +
+                                "Reden: " + element.Reden + "\n\n" +
+                                "Traject: " + element.Traject);
                         });
                     }
                 }

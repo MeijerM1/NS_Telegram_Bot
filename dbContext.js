@@ -42,16 +42,16 @@ exports.getTimesForUser = (userId, callback) => {
 }
 
 exports.getUserStationForTime = (time) => {
-    var query ="SELECT DISTINCT u.id, s.name_long FROM user AS u " +
-                    "JOIN time AS t ON t.userId = u.id " +
-                    "JOIN user_station AS us ON u.id = us.user_id " +
-                    "JOIN station AS s ON us.station_id = s.id " +
-                    "WHERE t.time LIKE ?";
+    var query = "SELECT DISTINCT u.id, s.name_long FROM user AS u " +
+        "JOIN time AS t ON t.userId = u.id " +
+        "JOIN user_station AS us ON u.id = us.user_id " +
+        "JOIN station AS s ON us.station_id = s.id " +
+        "WHERE t.time LIKE ?";
 
-    var params  = [time];
+    var params = [time];
 
     executeQuery(query, params, nsHelper.checkStoring);
-} 
+}
 
 exports.addTime = (userId, time) => {
 
@@ -64,9 +64,9 @@ exports.addTime = (userId, time) => {
 
 exports.getStationsForUser = (userId, callback) => {
 
-    var query = "SELECT s.name_long FROM station AS s "+
-                "JOIN user_station us ON s.id = us.station_id " +
-                "WHERE us.user_id LIKE ? ORDER BY s.name_long;"
+    var query = "SELECT s.name_long FROM station AS s " +
+        "JOIN user_station us ON s.id = us.station_id " +
+        "WHERE us.user_id LIKE ? ORDER BY s.name_long;"
 
     var params = [userId];
 
@@ -98,7 +98,7 @@ exports.removeStationForUser = (station, userId) => {
     executeQuery(query, params);
 }
 
-exports.linkUserStation = function(userId, stationName) {
+exports.linkUserStation = function (userId, stationName) {
     var query = "SELECT * FROM station WHERE name_long LIKE ? OR name_middle LIKE ? OR name_short LIKE ?";
 
     var params = [stationName, stationName, stationName];
@@ -108,7 +108,7 @@ exports.linkUserStation = function(userId, stationName) {
     }, userId);
 }
 
-exports.AddStationForUser = (userId, stationId ) => {
+exports.AddStationForUser = (userId, stationId) => {
     var query = "INSERT INTO user_station (user_id, station_id) VALUES (?, ?)";
 
     var params = [userId, stationId];
@@ -117,20 +117,20 @@ exports.AddStationForUser = (userId, stationId ) => {
 }
 
 function executeQuery(query, queryParams, callback, callbackParams) {
-    pool.getConnection(function(err, connection) {
+    pool.getConnection(function (err, connection) {
 
         connection.query(query, queryParams, function (error, results, fields) {
-            connection.release();        
+            connection.release();
             if (error) {
                 console.log(error);
                 return false;
             };
 
-            console.log("Executed query: " + query +  " with parameters " + queryParams);
+            console.log("Executed query: " + query + " with parameters " + queryParams);
             console.log("Affected rows: " + results.affectedRows);
 
-            if(callback !== undefined) {
-                callback(results, callbackParams);            
+            if (callback !== undefined) {
+                callback(results, callbackParams);
             }
         });
     });
