@@ -24,8 +24,6 @@ exports.run = (ctx) => {
 }
 
 function checkUserTimes(results, userId) {
-    console.log(results);
-
     if (results.length >= 2) {
         bot.sendMessage(userId, "You can only set 2 times at which you want to receive notifications");
         return;
@@ -39,7 +37,6 @@ function checkUserTimes(results, userId) {
 }
 
 function checkTime(stringTime) {
-    console.log(stringTime);
     var timePattern = new RegExp(/^([2][0-3]|[01]?[0-9])([.:][0-5][0-9])?$/);
     if (timePattern.test(stringTime) && stringTime.length === 5) {
         return true;
@@ -50,28 +47,37 @@ function checkTime(stringTime) {
 }
 
 function scheduleJob(time) {
-    console.log(time);
     var hours = time.substring(0, 2);
     var minutes = time.substring(3, 5);
 
     var rule = new schedule.RecurrenceRule();
-    rule.dayOfWeek = [0, new schedule.Range(0, 4)];
+    rule.dayOfWeek = [0, new schedule.Range(0, 7)];
     rule.hour = parseInt(hours);
     rule.minute = parseInt(minutes);
 
     var j = schedule.scheduleJob(rule, function (fireDate) {
-        console.log(fireDate);
 
+        var hours = fireDate.getHours();
         var minutes = fireDate.getMinutes();
 
-        if (minutes.length === 1) {
-            minutes = "0" + minutes;
+        if (hours < 10) {
+            hours = padNumber(hours, 2);
         }
 
-        var time = fireDate.getHours() + ":" + minutes;
+        if (minutes < 10) {
+            minutes = padNumber(minutes, 2);
+        }
+
+        var time = hours + ":" + minutes;
 
         dbContext.getUsersForTime(time, nsHelper.checkStoringForUsers);
     });
+}
+
+function padNumber(n, p, c) {
+    var pad_char = typeof c !== 'undefined' ? c : '0';
+    var pad = new Array(1 + p).join(pad_char);
+    return (pad + n).slice(-pad.length);
 }
 
 exports.help = () => {
