@@ -2,6 +2,9 @@
 
 A telegram bot that will provide information about train failures in the Netherlands.
 
+## Prerequisites
+A telegram account and installed client, you can get one here: https://telegram.org/.
+
 ## Instructions
 1. Add the bot with the following link: http://t.me/NS_Checker_Bot
 2. Add your stations using either the _route_ command or the _addStation_ command
