@@ -1,6 +1,6 @@
 # NS_Telegram_Bot
 
-A telegram bot that will provide information about train failures in the Neherlands.
+A telegram bot that will provide information about train failures in the Netherlands.
 
 ## Instructions
 1. Add the bot with the following link: http://t.me/NS_Checker_Bot
