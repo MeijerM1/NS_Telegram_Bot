@@ -9,6 +9,8 @@ A telegram bot that will provide information about train failures in the Netherl
 4. You will now receive notifications about your stations at the given time
 
 ## Full command list
+A command can be executed by starting a message with a '/', the command name and optional parameters.
+
 - addStation [stationName]: Add the given station to your station list.
 - addTime [hh:mm]: Add a time to receive notifications on.
 - help: Display list of commands
