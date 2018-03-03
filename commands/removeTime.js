@@ -12,7 +12,19 @@ exports.run = (ctx) => {
         return;
     }
 
-    dbContext.removeTime(ctx.from.id, ctx.state.command.splitArgs[0], sendConfirmation);
+    let time = ctx.state.command.splitArgs[0];
+
+    let hourNumber  = Number(time.substring(0,2));
+
+    if(hourNumber === 00) {
+        hourNumber = 23;
+    } else {
+        hourNumber--;
+    }
+
+    time = hourNumber + time.substring(2,5);
+
+    dbContext.removeTime(ctx.from.id, time, sendConfirmation);
 }
 
 function checkTime(stringTime) {
