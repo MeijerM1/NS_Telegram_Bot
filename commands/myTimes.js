@@ -1,5 +1,6 @@
-const dbContext = require('../dbContext');
+const dbContext = require('../libs/dbContext');
 const bot = require('../bot');
+const timeFormatter = require('../libs/timeFormatter');
 
 exports.run = (ctx) => {
     dbContext.getTimesForUser(ctx.from.id, printResults);
@@ -14,25 +15,11 @@ function printResults(results, userId) {
         message = "Your are being notified at: \n"
 
         results.forEach(element => {
-            message = message + "- " + increaseHour(element.time) + "\n";
+            message = message + "- " + timeFormatter.increaseHour(element.time) + "\n";
         });
     }
 
     bot.sendMessage(userId, message);
-}
-
-function increaseHour(time) {
-    let hours  = Number(time.substring(0,2));
-    var newTime;
-
-    if(hours === 23) {
-        newTime  = "00" + time.substring(2,5); 
-    } else {
-        hours++;
-        newTime = hours + time.substring(2,5);
-    }
-
-    return newTime;
 }
 
 exports.help = () => {

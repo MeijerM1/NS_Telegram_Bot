@@ -1,5 +1,5 @@
-const nsHelper = require('../nsHelper');
-const dbContext = require('../dbContext');
+const nsHelper = require('../libs/nsHelper');
+const dbContext = require('../libs/dbContext');
 
 exports.run = (ctx) => {
 

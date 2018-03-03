@@ -3,7 +3,7 @@ const ns = require('ns-api')({
     password: process.env.NS_TOKEN
 });
 
-const bot = require('./bot');
+const bot = require('../bot');
 const dbContext = require("./dbContext");
 
 exports.getStationList = (callback, stations) => {

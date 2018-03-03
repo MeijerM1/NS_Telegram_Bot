@@ -1,6 +1,7 @@
-const dbContext = require('../dbContext');
+const dbContext = require('../libs/dbContext');
 const schedule = require('node-schedule');
-const nsHelper = require('../nsHelper');
+const nsHelper = require('../libs/nsHelper');
+const timeFormatter = require("../libs/timeFormatter");
 const bot = require('../bot');
 
 var timeStamp;
@@ -13,22 +14,18 @@ exports.run = (ctx) => {
 
     let time = ctx.state.command.splitArgs[0];
 
-    let hourNumber  = Number(time.substring(0,2));
-
-    if(hourNumber === 00) {
-        hourNumber = 23;
-    } else {
-        hourNumber--;
-    }
-
-    time = hourNumber + time.substring(2,5);
-
-    timeStamp = time;
-
-    if (!checkTime(time)) {
+    if (!timeFormatter.checkTime(time)) {
         ctx.reply("invalid time format, use hh:mm");
         return;
     }
+
+    console.log(time);
+
+    time = timeFormatter.decreaseHour(time);
+
+    console.log(time);
+
+    timeStamp = time;
 
     dbContext.getTimesForUser(ctx.from.id, checkUserTimes);
 }
@@ -44,16 +41,6 @@ function checkUserTimes(results, userId) {
     scheduleJob(timeStamp);
 
     bot.sendMessage(userId, "Time has been added")
-}
-
-function checkTime(stringTime) {
-    var timePattern = new RegExp(/^([2][0-3]|[01]?[0-9])([.:][0-5][0-9])?$/);
-    if (timePattern.test(stringTime) && stringTime.length === 5) {
-        return true;
-    } else {
-        console.log("invalid time format");
-        return false;
-    }
 }
 
 function scheduleJob(time) {

@@ -1,4 +1,4 @@
-const dbContext = require("../dbContext");
+const dbContext = require("../libs/dbContext");
 const bot = require("../bot");
 
 exports.run = (ctx) => {

@@ -1,4 +1,4 @@
-const nsHelper = require('../nsHelper');
+const nsHelper = require('../libs/nsHelper');
 
 exports.run = (ctx) => {
     ctx.reply("Checking for storingen");

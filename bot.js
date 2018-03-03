@@ -1,6 +1,6 @@
 const Telegraf = require('telegraf');
 const commandParts = require('telegraf-command-parts');
-const dbContext = require('./dbContext');
+const dbContext = require('./libs/dbContext');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 bot.use(commandParts());
