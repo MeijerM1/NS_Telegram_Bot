@@ -1,6 +1,7 @@
 const Telegraf = require('telegraf');
 const commandParts = require('telegraf-command-parts');
 const dbContext = require('./libs/dbContext');
+const defectChecker = require("./libs/defectChecker");
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 bot.use(commandParts());
@@ -95,5 +96,13 @@ exports.sendMessage = (userID, message) => {
   bot.telegram.sendMessage(userID, message);
 }
 
+function checkDefects(){
+
+  defectChecker.run();
+
+  setTimeout(checkDefects, 300000);
+}
+
 console.log('Bot initialised');
+checkDefects();
 bot.startPolling();

@@ -1,3 +1,4 @@
+const http = require("http");
 const ns = require('ns-api')({
     username: 'mpw.meijer@gmail.com',
     password: process.env.NS_TOKEN
@@ -27,6 +28,28 @@ exports.checkStoringForUsers = (users) => {
     users.forEach(user => {
         exports.checkStoringForUser(user.userId);
     });
+}
+
+exports.getAllDefects = (callback) => {
+    var request = require('request'),
+        username = "mpw.meijer@gmail.com",
+        password = process.env.NS_TOKEN,
+        url = "http://webservices.ns.nl/ns-api-storingen?&actual=true&unplanned=false",
+        auth = "Basic " + new Buffer(username + ":" + password).toString("base64");
+
+    request({
+            url: url,
+            headers: {
+                "Authorization": auth
+            }
+        },
+        function (error, response, body) {
+            var parseString = require('xml2js').parseString;
+            parseString(body.toString(),{trim: true}, function (err, result) {
+                callback(result);
+            });
+        }
+    );
 }
 
 exports.checkStoringForUser = (userId) => {
@@ -75,10 +98,9 @@ exports.checkStoringForUser = (userId) => {
                     } else {
                         userDefects.forEach(element => {
                             console.log(element);
-                            bot.sendMessage(userId, "Storing \n\n" +
+                            bot.sendMessage(userId, "Storing " + element.Traject + "\n\n" +
                                 "Bericht: " + element.Bericht + " \n\n" +
-                                "Reden: " + element.Reden + "\n\n" +
-                                "Traject: " + element.Traject);
+                                "Reden: " + element.Reden);
                         });
                     }
                 }

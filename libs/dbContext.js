@@ -183,6 +183,57 @@ exports.AddStationForUser = (userId, stationId) => {
 }
 
 /**
+ * Add a link between a user and a defect.
+ * @param {string} defectId The defect unique identifier. (provided by NS).
+ * @param {long} userId The user id.
+ */
+exports.AddUserDefect = (defectId, userId) => {
+    var query = "INSERT INTO defect_user (id, userId) VALUES (?, ?)";
+
+    var params = [defectId, userId];
+
+    executeQuery(query, params);
+}
+
+/**
+ * Check if a user has been informed about a defect.
+ * @param {long} userId The user.
+ * @param {object} defect Defect object provided by NS.
+ * @param {function} callback The callback function.
+ */
+exports.checkUserDefect = (userId, defect, callback) => {
+    var query = "SELECT * FROM defect_user WHERE id = ? AND userId = ?";
+
+    var params = [defect.id, userId];
+
+    executeQuery(query, params, callback, defect);
+}
+
+/**
+ * Get all users that are subscribed to both the stations. 
+ * 
+ * @param {string} firstStation The name of the first station.
+ * @param {string} secondStation The name of the second station.
+ * @param {function} callback The callback function.
+ */
+exports.GetUserWithStations = (firstStation, secondStation, callback, defect) => {
+    var query = "SELECT us.user_id FROM user_station AS us " +
+                "JOIN station s ON us.station_id = s.id " +
+                "WHERE station_id IN ((SELECT id FROM station WHERE name_short LIKE ? OR "   +
+                                                                    "name_middle LIKE ? OR " +
+                                                                    "name_long LIKE ?), "    +
+                                     "(SELECT id FROM station WHERE name_short LIKE ? OR "        +
+                                                                    "name_middle LIKE ? OR "      +
+                                                                    "name_long LIKE ?)) "         + 
+                "GROUP BY us.user_id " +
+                "HAVING count(DISTINCT station_id) = 2;";
+    
+    var params = [firstStation, firstStation, firstStation, secondStation, secondStation, secondStation];
+
+    executeQuery(query, params, callback, defect);
+}
+
+/**
  * Execute a query.
  * If a callback is specified will call it with the query results as first argument and the callbackParameters as second.
  * @param {string} query The query to execute.
@@ -200,8 +251,8 @@ function executeQuery(query, queryParams, callback, callbackParams) {
                 return false;
             };
 
-            console.log("Executed query: " + query + " with parameters " + queryParams);
-            console.log("Affected rows: " + results.affectedRows);
+            //console.log("Executed query: " + query + " with parameters " + queryParams);
+            //console.log("Affected rows: " + results.affectedRows);
 
             if (callback !== undefined) {
                 callback(results, callbackParams);
