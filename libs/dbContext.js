@@ -244,6 +244,11 @@ exports.GetUserWithStations = (firstStation, secondStation, callback, defect) =>
 function executeQuery(query, queryParams, callback, callbackParams) {
     pool.getConnection(function (err, connection) {
 
+        if(err) {
+            console.log(err);
+            return;
+        }
+
         connection.query(query, queryParams, function (error, results, fields) {
             connection.release();
             if (error) {

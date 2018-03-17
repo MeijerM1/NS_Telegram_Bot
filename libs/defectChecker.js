@@ -22,6 +22,12 @@ function getStations(defects) {
 /**
  * A defect can involve multiple routes.
  * Parse all routes to a list of stations.
+ * Data is structured in the following way:
+ * 
+ *       a single route.
+ * {--------------------------}
+ * "StationNameame-StationName;StationName-StationName";
+ * 
  * @param {string} data Route information provided by NS.
  */
 function parseRoute(defect) {
@@ -40,6 +46,11 @@ function parseRoute(defect) {
     });
 }
 
+/**
+ * Inform the user about a defect.
+ * @param {array} results List of user we need to inform.
+ * @param {object} defect The defect we need to inform the user about.
+ */
 function sendMessageToUsers(results, defect) {
     results.forEach(user => {
         // Check if we have already informed the user about this defect.
