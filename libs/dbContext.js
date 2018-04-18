@@ -209,6 +209,12 @@ exports.checkUserDefect = (userId, defect, callback) => {
     executeQuery(query, params, callback, defect);
 }
 
+exports.getAllTimes = (callback)=> {
+    var query = "SELECT DISTINCT time FROM time";
+
+    executeQuery(query, undefined, callback, undefined);
+}
+
 /**
  * Get all users that are subscribed to both the stations. 
  * 

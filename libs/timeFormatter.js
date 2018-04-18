@@ -41,8 +41,6 @@ exports.decreaseHour = (time) => {
         return undefined;
     }
 
-    console.log(time);
-
     let hours  = Number(time.substring(0,2));
 
     if(hours === 00) {

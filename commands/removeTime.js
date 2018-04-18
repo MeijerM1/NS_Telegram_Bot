@@ -15,7 +15,7 @@ exports.run = (ctx) => {
         return;
     }
 
-    time = timeFormatter.decreaseHour(time);
+    //time = timeFormatter.decreaseHour(time);
 
     dbContext.removeTime(ctx.from.id, time, sendConfirmation);
 }

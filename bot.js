@@ -2,6 +2,7 @@ const Telegraf = require('telegraf');
 const commandParts = require('telegraf-command-parts');
 const dbContext = require('./libs/dbContext');
 const defectChecker = require("./libs/defectChecker");
+const nsHelper = require('./libs/nsHelper');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 bot.use(commandParts());
@@ -87,6 +88,13 @@ bot.catch((err) => {
   console.log('Error occured: ', err)
 })
 
+function initialise() {
+  console.log("Initialising");
+  nsHelper.initialise();
+
+  setInterval(defectChecker.run, 300000);
+}
+
 /**
  * Send a message to a specific user.
  * @param {long} userID The message receipient
@@ -96,13 +104,5 @@ exports.sendMessage = (userID, message) => {
   bot.telegram.sendMessage(userID, message);
 }
 
-function checkDefects(){
-
-  defectChecker.run();
-
-  setTimeout(checkDefects, 300000);
-}
-
-console.log('Bot initialised');
-checkDefects();
+initialise();
 bot.startPolling();

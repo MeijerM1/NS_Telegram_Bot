@@ -15,7 +15,7 @@ function printResults(results, userId) {
         message = "Your are being notified at: \n"
 
         results.forEach(element => {
-            message = message + "- " + timeFormatter.increaseHour(element.time) + "\n";
+            message = message + "- " + element.time + "\n";
         });
     }
 

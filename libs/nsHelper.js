@@ -1,4 +1,5 @@
 const http = require("http");
+const schedule = require('node-schedule');
 const ns = require('ns-api')({
     username: 'mpw.meijer@gmail.com',
     password: process.env.NS_TOKEN
@@ -52,22 +53,60 @@ exports.getAllDefects = (callback) => {
     );
 }
 
+exports.initialise = () => {
+    dbContext.getAllTimes(exports.ScheduleAllTimes);
+}
+
+exports.ScheduleAllTimes = (times) => {
+    times.forEach(time => {        
+        exports.scheduleJob(time.time);
+    });
+
+    console.log("All jobs scheduled");
+}
+
+exports.scheduleJob = (time) => {
+console.log("Scheduling job at: " + time);
+
+    var hours = time.substring(0, 2);
+    var minutes = time.substring(3, 5);
+
+    var rule = new schedule.RecurrenceRule();
+    rule.dayOfWeek = [0, new schedule.Range(0, 7)];
+    rule.hour = parseInt(hours);
+    rule.minute = parseInt(minutes);
+
+    var j = schedule.scheduleJob(rule, function (fireDate) {
+
+        var hours = fireDate.getHours();
+        var minutes = fireDate.getMinutes();
+
+        if (hours < 10) {
+            hours = padNumber(hours, 2);
+        }
+
+        if (minutes < 10) {
+            minutes = padNumber(minutes, 2);
+        }
+
+        var time = hours + ":" + minutes;
+
+        dbContext.getUsersForTime(time, exports.checkStoringForUsers);
+    });
+}
+
 exports.checkStoringForUser = (userId) => {
-    console.log(userId);
     var userDefects = new Array();
 
     dbContext.getStationsForUser(userId, function (results) {
 
         var counter = results.length;
-        console.log("Getting info for " + counter + " stations");
 
         results.forEach(element => {
             var params = {
                 station: element.name_long,
                 unplanned: true
             };
-
-            console.log(params);
 
             ns.storingen(params, function (err, data) {
                 if (err) {
@@ -87,17 +126,13 @@ exports.checkStoringForUser = (userId) => {
                     });
                 }
 
-                console.log(counter);
-
                 counter--;
 
                 if (counter <= 0) {
-
                     if (userDefects.length === 0) {
                         bot.sendMessage(userId, "There are no know defects at the moment! Note that standard disclaimers apply. Information may be incomplete or incorrect.")
                     } else {
                         userDefects.forEach(element => {
-                            console.log(element);
                             bot.sendMessage(userId, "Storing " + element.Traject + "\n\n" +
                                 "Bericht: " + element.Bericht + " \n\n" +
                                 "Reden: " + element.Reden);
@@ -111,6 +146,4 @@ exports.checkStoringForUser = (userId) => {
 
 exports.checkStoring = (results) => {
     console.log(results);
-
-
 }

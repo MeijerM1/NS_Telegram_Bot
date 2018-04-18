@@ -1,5 +1,4 @@
 const dbContext = require('../libs/dbContext');
-const schedule = require('node-schedule');
 const nsHelper = require('../libs/nsHelper');
 const timeFormatter = require("../libs/timeFormatter");
 const bot = require('../bot');
@@ -19,11 +18,7 @@ exports.run = (ctx) => {
         return;
     }
 
-    console.log(time);
-
-    time = timeFormatter.decreaseHour(time);
-
-    console.log(time);
+    //time = timeFormatter.decreaseHour(time);
 
     timeStamp = time;
 
@@ -38,38 +33,11 @@ function checkUserTimes(results, userId) {
 
     dbContext.addTime(userId, timeStamp);
 
-    scheduleJob(timeStamp);
+    nsHelper.scheduleJob(timeStamp);
 
     bot.sendMessage(userId, "Time has been added")
 }
 
-function scheduleJob(time) {
-    var hours = time.substring(0, 2);
-    var minutes = time.substring(3, 5);
-
-    var rule = new schedule.RecurrenceRule();
-    rule.dayOfWeek = [0, new schedule.Range(0, 7)];
-    rule.hour = parseInt(hours);
-    rule.minute = parseInt(minutes);
-
-    var j = schedule.scheduleJob(rule, function (fireDate) {
-
-        var hours = fireDate.getHours();
-        var minutes = fireDate.getMinutes();
-
-        if (hours < 10) {
-            hours = padNumber(hours, 2);
-        }
-
-        if (minutes < 10) {
-            minutes = padNumber(minutes, 2);
-        }
-
-        var time = hours + ":" + minutes;
-
-        dbContext.getUsersForTime(time, nsHelper.checkStoringForUsers);
-    });
-}
 
 function padNumber(n, p, c) {
     var pad_char = typeof c !== 'undefined' ? c : '0';

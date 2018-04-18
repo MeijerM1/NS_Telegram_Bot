@@ -31,12 +31,8 @@ function parseRoute(defect) {
     // Split the routes into a list of stations.
     routes.forEach(route => {
         var stations = route.split(/[-]+/).map(Function.prototype.call, String.prototype.trim); // Trim all white spaces.
-        if (stations.length > 2) {
-            dbHelper.GetUserWithStations(stations[0], stations[2], sendMessageToUsers, defect);
 
-        } else {
-            dbHelper.GetUserWithStations(stations[0], stations[1], sendMessageToUsers, defect);
-        }
+        dbHelper.GetUserWithStations(stations[0], stations[(stations.length - 1)], sendMessageToUsers, defect);
     });
 }
 
@@ -46,7 +42,8 @@ function sendMessageToUsers(results, defect) {
         dbHelper.checkUserDefect(user.user_id, defect, function (results, defect) {
 
             // We have not informed the user.
-            if (results.length <= 0) {
+            if (results.length === 0) {
+
                 // Notify the user.
                 bot.sendMessage(user.user_id, "Storing " + defect.Traject + "\n\n" +
                     "Bericht: " + defect.Bericht + " \n\n" +
