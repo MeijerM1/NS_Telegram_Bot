@@ -24,8 +24,6 @@ function getStations(defects) {
  * Parse all routes to a list of stations.
  * Data is structured in the following way:
  * 
- *       a single route.
- * {--------------------------}
  * "StationNameame-StationName;StationName-StationName";
  * 
  * @param {string} data Route information provided by NS.
@@ -38,6 +36,8 @@ function parseRoute(defect) {
     routes.forEach(route => {
         var stations = route.split(/[-]+/).map(Function.prototype.call, String.prototype.trim); // Trim all white spaces.
 
+        // TODO: Get user for all stations on route.
+        // Only get a user if he is sbscribed to the first and last station on the route.
         dbHelper.GetUserWithStations(stations[0], stations[(stations.length - 1)], sendMessageToUsers, defect);
     });
 }
