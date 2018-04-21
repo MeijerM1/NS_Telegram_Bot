@@ -1,4 +1,5 @@
 const http = require("http");
+const moment = require('moment-timezone');
 const schedule = require('node-schedule');
 const ns = require('ns-api')({
     username: 'mpw.meijer@gmail.com',
@@ -133,9 +134,13 @@ exports.checkStoringForUser = (userId) => {
                         bot.sendMessage(userId, "There are no know defects at the moment! Note that standard disclaimers apply. Information may be incomplete or incorrect.")
                     } else {
                         userDefects.forEach(element => {
+                            var date  = new Date(element.Datum);
+                            console.log(date);
+
                             bot.sendMessage(userId, "Storing " + element.Traject + "\n\n" +
                                 "Bericht: " + element.Bericht + " \n\n" +
-                                "Reden: " + element.Reden);
+                                "Reden: " + element.Reden + "\n" +
+                                "Laatste update: " + date.getHours() + ":" + (date.getMinutes()<10?'0':'') + date.getMinutes());
                         });
                     }
                 }

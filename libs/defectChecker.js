@@ -55,10 +55,13 @@ function sendMessageToUsers(results, defect) {
             // We have not informed the user.
             if (results.length === 0) {
 
+                var date  = new Data(defect.Datum);
+
                 // Notify the user.
                 bot.sendMessage(user.user_id, "Storing " + defect.Traject + "\n\n" +
                     "Bericht: " + defect.Bericht + " \n\n" +
-                    "Reden: " + defect.Reden);
+                    "Reden: " + defect.Reden + "\n" +
+                    "Laatste update: " + date.getHours() + ":" + (date.getMinutes()<10?'0':'') + date.getMinutes());
 
                 // Store that we have notified the user.
                 dbHelper.AddUserDefect(defect.id, user.user_id);
